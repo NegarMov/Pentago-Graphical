@@ -95,6 +95,14 @@ public class Cell{
     }
 
     /**
+     * Get the turn of the players at the moment.
+     * @return turn field.
+     */
+    public static int getTurn() {
+        return turn;
+    }
+
+    /**
      * Relief the selected button and make it ready for the next
      * action.
      */
