@@ -18,5 +18,6 @@ public class Main {
         board.setResizable(false);
         board.setVisible(true);
         board.repaint();
+        board.runGame();
     }
 }

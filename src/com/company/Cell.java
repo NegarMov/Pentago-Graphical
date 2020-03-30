@@ -17,23 +17,17 @@ public class Cell{
     private JButton button;
     // The turn of the players [0: first player(white)  1: second player(black)]
     static int turn;
-    // The x of the cell
-    private int x;
-    // The y of the cell
-    private int y;
     // The status of the cell [0: empty    1: white    -1: black]
     private int stat;
+    // Shows if a cell is selected at this moment [At the time a cell is selected changes to true and after that to false]
+    static boolean isSelected = false;
 
     /**
      * Create a new cell with the given coordinate and add a button with an empty icon
      * to it.
-     * @param x the x of the new cell.
-     * @param y the y of the new cell.
      */
-    public Cell(int x, int y) {
+    public Cell() {
         turn = 0;
-        this.x = x;
-        this.y = y;
         stat = 0;
 
         button = new JButton();
@@ -66,11 +60,30 @@ public class Cell{
     }
 
     /**
+     * Swap the cell with another cell by swapping their icon and status.
+     * @param other
+     */
+    public void swap(Cell other) {
+        // Swap icons
+        Icon tempIcon = this.button.getIcon();
+        this.button.setIcon(other.button.getIcon());
+        other.button.setIcon(tempIcon);
+        // Swap stats
+        int tmp = this.stat;
+        this.stat = other.stat;
+        other.stat = tmp;
+    }
+
+    /**
      * Get the button of the cell.
      * @return button field.
      */
     public JButton getButton() {
         return button;
+    }
+
+    public static boolean isSelected() {
+        return isSelected;
     }
 
     /**
@@ -79,6 +92,14 @@ public class Cell{
      */
     public int getStat() {
         return stat;
+    }
+
+    /**
+     * Relief the selected button and make it ready for the next
+     * action.
+     */
+    static void roundFinished() {
+        isSelected = false;
     }
 
     /**
@@ -91,6 +112,7 @@ public class Cell{
                 updateCell((turn==0)? "W" : "B");
                 stat = (turn==0)? 1 : -1;
                 turn = 1 - turn;
+                isSelected = true;
             }
             else
                 JOptionPane.showMessageDialog(null, "Please choose another cell.","Occupied Cell Selected" ,JOptionPane.ERROR_MESSAGE);
