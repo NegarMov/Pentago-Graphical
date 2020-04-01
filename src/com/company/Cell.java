@@ -15,20 +15,30 @@ public class Cell{
     // The button which shows the cell and has features, like its
     // icon changes when clicked on
     private JButton button;
-    // The turn of the players [0: first player(white)  1: second player(black)]
-    static int turn;
     // The status of the cell [0: empty    1: white    -1: black]
     private int stat;
+    // The x of the cell
+    private int x;
+    // The y of the cell
+    private int y;
+    // The turn of the players [0: first player(white)  1: second player(black)]
+    static int turn;
     // Shows if a cell is selected at this moment [At the time a cell is selected changes to true and after that to false]
     static boolean isSelected = false;
+    // The x of selected cell
+    static int selectedX;
+    // The y of selected cell
+    static int selectedY;
 
     /**
      * Create a new cell with the given coordinate and add a button with an empty icon
      * to it.
      */
-    public Cell() {
+    public Cell(int x, int y) {
         turn = 0;
         stat = 0;
+        this.x = x;
+        this.y = y;
 
         button = new JButton();
         JPanel pnl = new JPanel();
@@ -120,6 +130,8 @@ public class Cell{
             if (stat==0) {
                 updateCell((turn==0)? "W" : "B");
                 stat = (turn==0)? 1 : -1;
+                selectedX = x;
+                selectedY = y;
                 isSelected = true;
             }
             else

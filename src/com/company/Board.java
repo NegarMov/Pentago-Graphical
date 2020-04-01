@@ -2,7 +2,6 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 /**
  * The Board class simulates a board for Pentago game. It holds a list of the board
@@ -16,8 +15,11 @@ public class Board extends JFrame{
 
     // The list of the board's cells
     protected Cell[][] cells;
+    // The name of the player at the moment
     private JLabel player;
+    // The number of stones on the game board
     private int moves;
+    // Shows if each block is empty or not
     private boolean[] isEmpty;
 
     /**
@@ -33,7 +35,7 @@ public class Board extends JFrame{
 
         for (int i=0; i<6; i++) {
             for (int j = 0; j < 6; j++) {
-                Cell c = new Cell();
+                Cell c = new Cell(i, j);
                 if (j == 3)
                     add(new JLabel(" "));
                 add(c.getButton());
@@ -52,7 +54,7 @@ public class Board extends JFrame{
     }
 
     /**
-     * Swap the given section 90 degrees clockwise or anticlockwise.
+     * Rotate the given section 90 degrees clockwise or anticlockwise.
      * @param section The section of the board to rotate.
      * @param direction The direction of the rotation. [CW: clockwise, ACW: anticlockwise]
      */
@@ -137,7 +139,15 @@ public class Board extends JFrame{
         boolean[] flag = {false, false};
         while (!checkBoard()[0] && !checkBoard()[1] && moves<36) {
             while (!Cell.isSelected());
-            //isEmpty[] = false;
+
+            int block = 0;
+            int[] blockCells = new int[]{0, 1, 2, 6, 7, 8, 12, 13, 14};
+            int[] blocks = new int[]{0, 3, 18, 21};
+            for (int i=0; i<4; i++)
+                for (int j=0; j<9; j++)
+                    if (Cell.selectedX * 6 + Cell.selectedY == blocks[i] + blockCells[j])
+                        block = i;
+            isEmpty[block] = false;
 
             if (checkBoard()[0])
                 flag[0] = true;
@@ -150,7 +160,7 @@ public class Board extends JFrame{
                 sectionOptions = new Integer[]{1, 2, 3, 4, 5};
             else
                 sectionOptions = new Integer[]{1, 2, 3, 4};
-            int section = JOptionPane.showOptionDialog(null, "Which section of the board you want to rotate? (Press 5 to pass)",
+            int section = JOptionPane.showOptionDialog(null, ((pass)? "Which section of the board you want to rotate? (Press 5 to pass)" : "Which section of the board you want to rotate?"),
                     "Section to Rotate", 0, 3, null, sectionOptions, sectionOptions[0]);
             if (section!=4) {
                 String[] directionOptions = {"Clockwise", "Anticlockwise"};
