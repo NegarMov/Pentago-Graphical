@@ -107,6 +107,7 @@ public class Cell{
      * action.
      */
     static void roundFinished() {
+        turn = 1 - turn;
         isSelected = false;
     }
 
@@ -119,7 +120,6 @@ public class Cell{
             if (stat==0) {
                 updateCell((turn==0)? "W" : "B");
                 stat = (turn==0)? 1 : -1;
-                turn = 1 - turn;
                 isSelected = true;
             }
             else

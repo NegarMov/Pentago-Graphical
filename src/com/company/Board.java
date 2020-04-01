@@ -2,6 +2,7 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * The Board class simulates a board for Pentago game. It holds a list of the board
@@ -17,6 +18,7 @@ public class Board extends JFrame{
     protected Cell[][] cells;
     private JLabel player;
     private int moves;
+    private boolean[] isEmpty;
 
     /**
      * Creat a new board with adding 36 cells to it.
@@ -25,6 +27,7 @@ public class Board extends JFrame{
 
         cells = new Cell[6][6];
         moves = 0;
+        isEmpty = new boolean[]{true, true, true, true};
 
         setLayout(new FlowLayout());
 
@@ -96,7 +99,7 @@ public class Board extends JFrame{
      */
     private boolean[] checkBoard() {
         boolean[] ans = {false, false}; // [0: first player, 1: second player]
-        int[][] diagonalWays = {{1, 8, 15, 12, 29}, {6, 13, 20, 27, 34}, {0, 7, 14, 21, 28}, {7, 14, 21, 28, 35}
+        int[][] diagonalWays = {{1, 8, 15, 22, 29}, {6, 13, 20, 27, 34}, {0, 7, 14, 21, 28}, {7, 14, 21, 28, 35}
                                 , {11, 16, 21, 26, 31}, {4, 9, 14, 19, 24}, {5, 10, 15, 20, 25}, {10, 15, 20, 25, 30}};
         int[][] verticalWays = {{-1, 5, 11, 17, 23}, {5, 11, 17, 23, 29}};
         int[][] horizontalWays = {{-6, -5, -4, -3, -2}, {-5, -4, -3, -2, -1}};
@@ -131,23 +134,42 @@ public class Board extends JFrame{
      * White begins the game.
      */
     public void runGame() {
+        boolean[] flag = {false, false};
         while (!checkBoard()[0] && !checkBoard()[1] && moves<36) {
             while (!Cell.isSelected());
-            Integer[] sectionOptions = {1, 2, 3, 4};
-            int section = JOptionPane.showOptionDialog(null, "Which section of the board you want to rotate?",
+            //isEmpty[] = false;
+
+            if (checkBoard()[0])
+                flag[0] = true;
+            else if (checkBoard()[1])
+                flag[1] = true;
+
+            boolean pass = isEmpty[0] || isEmpty[1] || isEmpty[2] || isEmpty[3];
+            Integer[] sectionOptions;
+            if (pass)
+                sectionOptions = new Integer[]{1, 2, 3, 4, 5};
+            else
+                sectionOptions = new Integer[]{1, 2, 3, 4};
+            int section = JOptionPane.showOptionDialog(null, "Which section of the board you want to rotate? (Press 5 to pass)",
                     "Section to Rotate", 0, 3, null, sectionOptions, sectionOptions[0]);
-            String[] directionOptions = {"Clockwise", "Anticlockwise"};
-            int direction = JOptionPane.showOptionDialog(null, "In which direction you want to rotate the block?",
-                    "CW or ACW", 0, 3, null, directionOptions, directionOptions[0]);
-            rotate(section, (direction == 0) ? "CW" : "ACW");
+            if (section!=4) {
+                String[] directionOptions = {"Clockwise", "Anticlockwise"};
+                int direction = JOptionPane.showOptionDialog(null, "In which direction you want to rotate the block?",
+                        "CW or ACW", 0, 3, null, directionOptions, directionOptions[0]);
+                rotate(section, (direction == 0) ? "CW" : "ACW");
+            }
+
             moves++;
+            Cell.roundFinished();
             remove(player);
             player = new JLabel((Cell.getTurn()==0)? "[Player 1]" : "[Player 2]");
             add(player);
             revalidate();
-            Cell.roundFinished();
         }
-        JOptionPane.showMessageDialog(null,(checkBoard()[0] && checkBoard()[1])? "<<Draw!>>" :
-                                     (checkBoard()[0])? "<<White Wins!>>" : (checkBoard()[1])? "<<Black Wins!>>" : "<<Draw!>>");
+        String result = (flag[0])? "<<White Wins!>>" : (flag[1])? "<<Black Wins!>>" :
+                (checkBoard()[0] && checkBoard()[1])? "<<Draw!>>" :
+                        (checkBoard()[0])? "<<White Wins!>>" :
+                                (checkBoard()[1])? "<<Black Wins!>>" : "<<Draw!>>";
+        JOptionPane.showMessageDialog(null, result);
     }
 }
